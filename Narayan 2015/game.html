@@ -1,0 +1,434 @@
+<html>
+
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="viewport" content = "width = device-height, initial-scale = 0.5, user-scalable = 1, height = device-width" />
+<meta name="mobile-web-app-capable" content="yes">
+<head>
+	<style>
+		html, body {
+			width: 100%;
+			height: 100%;
+			margin: 0px;
+			border: 0;
+			overflow: hidden; /*  Disable scrollbars */
+			display: block;  /* No floating content on sides */
+		}
+	</style>
+	
+</head>
+<body>
+<canvas id="canvas"></canvas>
+
+<script>
+
+
+var canvas = document.getElementById("canvas").getContext("2d");
+var ctx = canvas;
+
+
+
+var x = 5;
+var y = 5;
+var good = new Image();
+good.src = "good.png";
+var bad = new Image();
+bad.src = "bad.png";
+var narayan = new Image();
+narayan.src = "narayan.jpg";
+var mold = new Image();
+mold.src = "mold.jpg";
+var noo = new Audio("noo.mp3");
+var loaded = 0;
+good.onload = start;
+bad.onload = start;
+narayan.onload = start;
+mold.onload = start;
+noo.play();
+noo.oncanplay = start;
+var first = [false,false,false,false,false,false];
+
+var last = new Array(6);
+var xstartoffset = new Array(6);
+var xoffset = new Array(6);
+var isbad = new Array(6);
+var last2 = new Array(6);
+var whatlast = new Array(6);
+var enteranimation = new Array(6);
+var enteranimationx = new Array(6);
+var enteranimationy = new Array(6);
+var throwani = new Array(6);
+var throwanix = new Array(6);
+var throwaniy = new Array(6);
+var last3 = 0;//used for moving the enemies forward
+var timebetween = 2500;
+var goaway = 1500;
+var score = 0;
+var lastscore = 0;
+var amount = 1;
+var step = 1;
+var touch = false;
+var xamount = 0;//how many Xs have we obtained
+var lost = false;
+var donelostani = false;//have we finished showing the losing animation?
+var moldyoffset = 0;
+var anisecondstep = false;
+var menu = true;
+var last4 = 0;
+var last5 = 0;
+var narayanwidth = 0;
+var narayanheight = 0;
+for(var i=0;i<last2.length;i++){
+	last2[i] = 0;
+}
+for(var i=0;i<enteranimation.length;i++){
+	enteranimation[i] = false;
+}
+for(var i=0;i<enteranimationx.length;i++){
+	enteranimationx[i] = 0;
+}
+for(var i=0;i<enteranimationy.length;i++){
+	enteranimationy[i] = 0;
+}
+for(var i=0;i<throwaniy.length;i++){
+	throwaniy[i] = 0;
+}
+for(var i=0;i<throwanix.length;i++){
+	throwanix[i] = 0;
+}
+for(var i=0;i<throwani.length;i++){
+	throwani[i] = false;
+}
+
+function start(){
+	var ctx = canvas;
+	  ctx.canvas.width  = window.innerWidth;
+	  ctx.canvas.height = window.innerHeight;
+	var fontsize = 100;
+	ctx.font = fontsize + 'px Arial';
+	canvas.fillStyle = 'red';
+	var message = "Loading...";
+	canvas.fillText(message, 0, canvas.canvas.height-20);
+	loaded++;
+	console.log(loaded);
+	if(loaded>=5){
+		noo.pause();
+		setInterval(update,1000/50);
+	}	
+}
+
+
+function update(){
+	 var ctx = canvas;
+	  ctx.canvas.width  = window.innerWidth;
+	  ctx.canvas.height = window.innerHeight;
+
+	canvas.clearRect(0, 0,  ctx.canvas.width, ctx.canvas.height);
+
+	if(menu){
+		var fontsize = ctx.canvas.width/30;
+		ctx.font = fontsize + 'px Arial';
+		canvas.fillStyle = 'red';
+		var message = "Press the screen to play";
+		canvas.fillText(message, ctx.canvas.width/2-canvas.measureText(message).width/2, fontsize);
+
+		var fontsize = ctx.canvas.width/30;
+		ctx.font = fontsize + 'px Arial';
+		canvas.fillStyle = 'red';
+		var message = "Game created by Ajay Ramachandran";
+		canvas.fillText(message, ctx.canvas.width/2-canvas.measureText(message).width/2, canvas.canvas.height-20);
+
+		var fontsize = ctx.canvas.width/30;
+		ctx.font = fontsize + 'px Arial';
+		canvas.fillStyle = 'red';
+		var message = "Made as a gift. Play in landscape if possible";
+		canvas.fillText(message, ctx.canvas.width/2-canvas.measureText(message).width/2, canvas.canvas.height/2-fontsize/2);
+		return;
+	}
+	
+	if(lost && donelostani){
+		var fontsize = ctx.canvas.width/30;
+		ctx.font = fontsize + 'px Arial';
+		canvas.fillStyle = 'red';
+		var message = "You Lose... You earned " + score + " points";
+		canvas.fillText(message, ctx.canvas.width/2-canvas.measureText(message).width/2, fontsize);
+		return;
+	}
+
+	var entrancespeed = ctx.canvas.width/80;
+	var d = new Date();
+	
+	var size = ctx.canvas.width/10;
+	var sidespace = ctx.canvas.width/90;
+
+	narayanwidth = ctx.canvas.width/6;
+	narayanheight = narayanwidth*1.33884297521;
+	canvas.drawImage(narayan, canvas.canvas.width/2-narayanwidth/2, canvas.canvas.height/2-narayanheight/2, narayanwidth, narayanheight)
+
+	if(!lost&&xamount>=5){
+		lost = true;
+		noo.addEventListener('canplay', function() {
+    		noo.play();
+		})
+		noo.play();
+		moldyoffset = -canvas.canvas.height/2-narayanheight/2;
+		last = d.getTime();
+	}
+
+	if(!donelostani && lost){
+		canvas.drawImage(mold, canvas.canvas.width/2-narayanwidth/2, canvas.canvas.height/2-narayanheight/2+moldyoffset, narayanwidth, narayanheight)
+		if(d.getTime()-last>=20){
+			moldyoffset+=sidespace;
+			if(moldyoffset>=0){
+				moldyoffset = 0;
+				if(!anisecondstep){
+					last3 = d.getTime();
+					anisecondstep = true;
+				}
+				if(d.getTime()-last3>=1500){
+					donelostani = true;
+				}
+			}
+			last = d.getTime();
+		}
+	}
+
+	for(var q=0;q<amount;q++){
+		//console.log(last2[q] + " " + d.getTime() + " " + timebetween);
+		if(d.getTime()-last2[q]>=timebetween){
+			//console.log("hello");
+			var randnum = Math.random();
+			var setone = false;
+			for(i=0;i<last.length;i++){//do this every little while in increasing difficulty
+				if(randnum<0.16*(i+1) && randnum> 0.16*(i)){
+					if(!first[i]){
+						last[i] = d.getTime();
+						if((i+1)%2==0){//right
+							xstartoffset[i] = sidespace+size;
+
+						}else{//left
+							xstartoffset[i] = -sidespace-size;
+						}
+						xoffset[i] = xstartoffset[i];
+						isbad[i] =  Math.random()>0.3;
+						whatlast[i] = q;
+						setone = true;
+					}
+					first[i] = true;
+				}
+			}
+			if(setone){
+				last2[q] = d.getTime();
+			}
+		}
+	}
+	
+	d = new Date();
+	
+	if(score%8==0 && score!=lastscore){
+		lastscore = score;
+		if(timebetween>500 && goaway>500){
+			timebetween-=40;
+			goaway -= 15;
+		}
+	}
+	
+	if(score>50 && step==1){
+		step++;
+		amount++;
+	}
+	
+	if(score>100 && step==2){
+		step++;
+		amount++;
+	}
+	
+	if(score>250 && step==3){
+		step++;
+		amount++;
+	}
+	
+	if(score>400 && step==4){
+		step++;
+		amount++;
+	}
+	
+	for(i=0;i<last.length;i++){
+		if(first[i]){
+			var x = 0;
+			var y = 0;
+			if((i+1)%2==1){//left
+				x = sidespace;
+				if(d.getTime()-last3>=20){
+					xoffset[i]+=entrancespeed;
+					if(xoffset[i]>0){
+						xoffset[i] = 0;
+					}
+				}
+			}else{//right
+				x = ctx.canvas.width-sidespace-size;
+				if(d.getTime()-last3>=20){
+					xoffset[i]-=entrancespeed;
+					if(xoffset[i]<0){
+						xoffset[i] = 0;
+					}
+				}
+			}
+			if(i<2){
+				y=sidespace;
+			}else if(i<4){
+				y = ctx.canvas.height/2-size/2;
+			}else{
+				y = ctx.canvas.height-sidespace-size;
+			}
+			x+=xoffset[i];
+			//y=(ctx.canvas.height/100*80*(i%3)+1+ctx.canvas.height/100*10)/2;
+			if(isbad[i]){
+				canvas.drawImage(bad,x,y,size,size);
+			}else{
+				canvas.drawImage(good,x,y,size,size);
+			}
+			
+			if(d.getTime() - last[i] >= goaway && !throwani[i]){
+				first[i] = false;
+
+				enteranimation[i] = true;
+				enteranimationx = x;
+				enteranimationy = y;
+				last[i] = d.getTime();
+			}
+			if(throwani[i]){
+				var fontsize = ctx.canvas.width/30;
+				ctx.font = fontsize + 'px Arial';
+				canvas.fillText("NO!!",throwanix,throwaniy);
+				if(d.getTime()-last4>=5){
+					if(throwanix>x){
+						throwanix-=canvas.canvas.width/60;
+					}else{
+						throwanix+=canvas.canvas.width/60;
+					}
+					if(throwaniy>y){
+						throwaniy-=canvas.canvas.height/60;
+					}else{
+						throwaniy+=canvas.canvas.height/60;
+					}
+					if(Math.abs(throwanix-(x))<canvas.canvas.width/60 && Math.abs(throwaniy-(y)<canvas.canvas.width/60)){
+						throwani[i] = false;
+						last2[whatlast[i]]-=timebetween/2;
+						if(isbad[i]){
+							score+=4;
+						}else{
+							xamount++;
+						}
+						first[i] = false;
+					}
+					last4 = d.getTime();
+				}
+			}
+		}
+		if(enteranimation[i]){
+			if(isbad[i]){
+				canvas.drawImage(bad,enteranimationx,enteranimationy,size,size);
+			}else{
+				canvas.drawImage(good,enteranimationx,enteranimationy,size,size);
+			}
+			if(d.getTime()-last4>=20){
+				if(enteranimationx>canvas.canvas.width/2-narayanwidth/2){
+					enteranimationx-=canvas.canvas.width/40;
+				}else{
+					enteranimationx+=canvas.canvas.width/40;
+				}
+				if(enteranimationy>canvas.canvas.height/2-narayanheight/2){
+					enteranimationy-=canvas.canvas.height/40;
+				}else{
+					enteranimationy+=canvas.canvas.height/40;
+				}
+				if(Math.abs(enteranimationx-(canvas.canvas.width/2-narayanwidth/2))<canvas.canvas.width/40 && Math.abs(enteranimationy-(canvas.canvas.height/2-narayanheight/2)<canvas.canvas.width/40)){
+					enteranimation[i] = false;
+					if(isbad[i]){
+						xamount++;
+					}
+				}
+				last4 = d.getTime();
+			}
+		}
+	}
+	
+	
+	var fontsize = ctx.canvas.width/30;
+	ctx.font = fontsize + 'px Arial';
+	var message = "Score: " + score;
+	canvas.fillText(message, ctx.canvas.width/2-canvas.measureText(message).width/2, fontsize);
+	//var message = lastclickx + " " + lastclicky;
+	//canvas.fillText(message, ctx.canvas.width/2-canvas.measureText(message).width/2, fontsize);
+
+	message = "";
+	for(var i=0;i<xamount;i++){
+		message = message + "X";
+	}
+	canvas.fillStyle = 'red';
+	canvas.fillText(message, ctx.canvas.width/2-canvas.measureText(message).width/2, canvas.canvas.height);
+}
+
+
+function click(e){
+	if(menu){
+		menu = false;
+		return;
+	}
+	if(lost){
+		location.reload();
+		return;
+	}
+	for(i=0;i<last.length;i++){
+		if(first[i]){
+			var x = 0;
+			var y = 0;
+			var size = ctx.canvas.width/10;
+			var sidespace = ctx.canvas.width/90;
+			if((i+1)%2==1){
+				x = sidespace;
+			}else{
+				x = ctx.canvas.width-sidespace-size;
+			}
+			if(i<2){
+				y=sidespace;
+			}else if(i<4){
+				y = ctx.canvas.height/2-size/2;
+			}else{
+				y = ctx.canvas.height-sidespace-size;
+			}
+			x+=xoffset[i];
+			//y=(ctx.canvas.height/100*80*(i%3)+1+ctx.canvas.height/100*10)/2;
+			if(e.pageX>x && e.pageY>y && e.pageX<x+size && e.pageY<y+size){
+				throwani[i] = true;
+				throwanix = canvas.canvas.width/2-narayanwidth/2;
+				throwaniy = canvas.canvas.height/2-narayanheight/2;
+				
+				//console.log("YAY");
+			}else{
+				xamount++;
+			}
+			//canvas.fillRect(400*(i%2)+1,100*(i%3)+1,32,32);
+			
+		}
+	}
+}
+function touchclick(e){
+	touch = true;
+	click(e);
+}
+
+function mouseclick(e){
+	if(touch){
+		return;
+	}
+	click(e);
+}
+canvas.canvas.onmousedown = mouseclick;
+canvas.canvas.ontouchstart = touchclick;
+
+</script>
+
+</body>
+
+</html>

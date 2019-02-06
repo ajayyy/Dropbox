@@ -1,0 +1,354 @@
+<html>
+
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="viewport" content = "width = device-height, initial-scale = 0.5, user-scalable = 1, height = device-width" />
+<meta name="mobile-web-app-capable" content="yes">
+<head>
+	
+	
+</head>
+<body>
+<canvas id="canvas"></canvas>
+
+<script>
+var canvas = document.getElementById("canvas").getContext("2d");
+var ctx = canvas;
+canvas.canvas.addEventListener("touchstart", touchclick);
+
+
+var size = 0;
+var touch = false;
+
+var spen = new Image();
+spen.src = "spen.png";
+var star = new Image();
+star.src = "star.png";
+var sell = new Image();
+sell.src = "sell.png";
+var buy = new Image();
+buy.src = "buy.png";
+var truck = new Image();
+truck.src = "mail truck.jpg";
+
+var spennames = ["Totally legit S pen", "Original S pen", "Spen for Galxy Note 4, Samesung phones, Apple Pencil", "Spen Replacement for GALAXY Note 4  SM-AJISA-WES  OM-E original", "Original Touch Stylus S Pen Replacement For Samsung Galaxy Note 4 black", "SKILIWAH®new Original Touch Stylus SPen Replacement For Samsung Galaxy Note 4 black", "Original Touch Stylus S Pen Replacement For Samsung Galaxy Note 4 black ~ USA", "Samsung Galaxy Note 4 Stylus S pen - Black", "Nacodex® Black Replace Touch Stylus S-pen for Samsung Galaxy Note 4", "Samsung Galaxy Note 4 Galaxy Replacement Stylus Pen (Black)"];
+//var chosennames = [Math.random()*spennames.length, Math.random()*spennames.length, Math.random()*spennames.length];
+var foundamatch = true;
+var chosennames = [];
+while(chosennames.length < 3){
+	var randomnumber=Math.ceil(Math.random()*spennames.length)
+	var found=false;
+  	for(var i=0;i<chosennames.length;i++){
+		if(chosennames[i]==randomnumber){
+			found=true;break
+		}
+	}
+	if(!found)chosennames[chosennames.length]=randomnumber;
+}
+
+
+var prices = [0,0,0];
+for(var i=0;i<prices.length;i++){
+	prices[i] = Math.random()*15;
+	if(Math.random()>0.6){
+		prices[i] += Math.random()*15+1;
+	}
+	prices[i] = prices[i].toFixed(2);
+}
+var ratings = [0,0,0];//how many stars (can't be decimals just for simplicity's sake)
+for(var i=0;i<ratings.length;i++){
+	ratings[i] = Math.random()*4+1;
+	if(prices[i]<15){//do some check on price to ensure many are bad
+		if(Math.random()>0.7){
+			ratings[i] -= Math.random()*2;
+		}else{
+			ratings[i] -= Math.random();
+		}
+		
+		if(ratings[i]<=0.5){
+			ratings[i] = 1;
+		}
+	}
+	if(Math.random()>0.8){
+		ratings[i] += 1;
+		if(ratings[i]>5){
+			ratings[i] = 5;
+		}
+	}
+	ratings[i] = Math.round(ratings[i]);
+}
+
+var money = 30.00;//start with 30$
+var spens = 0;//how many spens do we have?
+var shippingani = false;
+
+var last = 0;//shipping animation last
+var runs = 0;//how many times has our truck done one lap
+var shippingx = 0;
+var bought = 0;//which item did we buy for future refrence after the animation
+
+var last2 = 0;//for telling player if it worked
+var worked = false;
+var workedani = false;
+
+var market = (Math.random()*10);//market value of spens to sell them
+market = market.toFixed(2);
+if(Math.random()>0.5){
+	market *= 3;
+	market = market.toFixed(2);
+}
+var last3 = new Date().getTime();//market value change last
+
+var soldani = false;//animation
+var soldanix = 0;
+var soldaniy = 0;
+var last4 = 0;//last4 is the sold animation last
+var soldanimessage = "SOLD!!!";
+
+setInterval(update,1000/50);
+
+function updatemarket(){
+	market = Math.random()*10;
+	market = market.toFixed(2);
+	if(Math.random()>0.5){
+		market *= 3;
+		market = market.toFixed(2);
+	}
+}
+
+function reset(){
+	chosennames = [Math.random()*spennames.length, Math.random()*spennames.length, Math.random()*spennames.length]
+	prices = [0,0,0];
+	for(var i=0;i<prices.length;i++){
+		prices[i] = Math.random()*15;
+		if(Math.random()>0.6){
+			prices[i] += Math.random()*15+1;
+		}
+		prices[i] = prices[i].toFixed(2);
+	}
+	ratings = [0,0,0];//how many stars (can't be decimals just for simplicity's sake)
+	for(var i=0;i<ratings.length;i++){
+		ratings[i] = Math.random()*4+1;
+		if(prices[i]<15){//do some check on price to ensure many are bad
+			if(Math.random()>0.7){
+				ratings[i] -= Math.random()*2;
+			}else{
+				ratings[i] -= Math.random();
+			}
+			
+			if(ratings[i]<=0.5){
+				ratings[i] = 1;
+			}
+		}
+		if(Math.random()>0.8){
+			ratings[i] += 1;
+			if(ratings[i]>5){
+				ratings[i] = 5;
+			}
+		}
+		ratings[i] = Math.round(ratings[i]);
+	}
+}
+
+function update(){
+	ctx.canvas.width  = window.innerWidth;
+	ctx.canvas.height = window.innerHeight;
+
+	size = canvas.canvas.width/4;
+
+	canvas.clearRect(0, 0,  ctx.canvas.width, ctx.canvas.height);
+
+	//draw sell button
+	canvas.drawImage(sell,0,0,ctx.canvas.width/13,ctx.canvas.width/13*0.7153)
+	
+	var starsize = ctx.canvas.width/35;
+	for(var i=0;i<3;i++){
+		var x = canvas.canvas.width/2*i-size/2*i;
+		for(var s=0;s<ratings[i];s++){
+			canvas.drawImage(star, (starsize*s)+x, canvas.canvas.height/2-starsize/2, starsize, starsize);
+		}
+
+		canvas.drawImage(spen,canvas.canvas.width/2*i-size/2*i,canvas.canvas.height/2-size/2, size, size);
+		canvas.drawImage(buy,canvas.canvas.width/2*i-size/2*i,canvas.canvas.height/2-size/2,ctx.canvas.width/13,ctx.canvas.width/13*0.7153);
+		var fontsize = ctx.canvas.width/100;
+		ctx.font = fontsize + 'px Arial';
+		canvas.fillStyle = 'black';
+		var message = spennames[Math.floor(chosennames[i])];
+		
+		var xoffset = 0;
+		while(canvas.measureText(message).width+(canvas.canvas.width/2*i-size/2*i-xoffset)>canvas.canvas.width){
+			xoffset += 1;
+		}
+		
+		canvas.fillText(message, x-xoffset,canvas.canvas.height/2-size/2);
+
+		canvas.fillText("$" + prices[i] + "   with FREE SHIPPING", x,canvas.canvas.height/2+size/2+fontsize);
+
+	}
+
+	//draw choose one
+	var fontsize = ctx.canvas.width/30;
+	ctx.font = fontsize + 'px Arial';
+	canvas.fillStyle = 'black';
+	var message = "Choose one...";
+	canvas.fillText(message, ctx.canvas.width/2-canvas.measureText(message).width/2, canvas.canvas.height);
+
+	//draw money
+	var fontsize = ctx.canvas.width/30;
+	ctx.font = fontsize + 'px Arial';
+	canvas.fillStyle = 'black';
+	var message = "Money: $" + money;
+	canvas.fillText(message, ctx.canvas.width/2-canvas.measureText(message).width/2, fontsize);
+
+	//draw amount of spens
+	var fontsize = ctx.canvas.width/30;
+	ctx.font = fontsize + 'px Arial';
+	canvas.fillStyle = 'black';
+	var message = "S pens: " + spens;
+	canvas.fillText(message, ctx.canvas.width-canvas.measureText(message).width, fontsize);
+
+	//shiping animation
+	if(shippingani){
+		var ssize = ctx.canvas.width/5;
+		var y = canvas.canvas.height/2-ssize*0.49923/2;
+		canvas.drawImage(truck,shippingx,y,ssize,ssize*0.49923);
+		if(new Date().getTime()-last>=20){
+			shippingx+=ctx.canvas.width/130;
+			if(shippingx>canvas.canvas.width){
+				shippingx = -ssize;
+				runs++;
+				if(runs>2){
+					shippingani = false;
+					runs=0;
+					shippingx = 0;
+					var works = Math.random()<0.2*(ratings[bought])-0.5;
+					//console.log(works);
+					if(works){//did the product work?
+						spens++;
+						reset();
+					}else{//nope
+						reset();
+					}
+					worked = works;
+					workedani = true;
+					//console.log(workedani);
+					last2 = new Date().getTime();
+					//console.log(last2);
+				}
+			}
+
+			last = new Date().getTime();
+		}
+	}
+
+	if(workedani){
+		//console.log(last2);
+		var fontsize = ctx.canvas.width/10;
+		ctx.font = fontsize + 'px Arial';
+		var message = "Hi, this glitched up bad";
+		if(worked){
+			canvas.fillStyle = 'lightgreen';
+			message = "Yay! It worked!";
+		}else{
+			canvas.fillStyle = 'red';
+			message = "It's defective...";
+		}
+		canvas.fillText(message, ctx.canvas.width/2-canvas.measureText(message).width/2, ctx.canvas.height/2-fontsize/2);
+		if(new Date().getTime()-last2>=1000){
+			//console.log(new Date().getTime()-last2);
+			workedani = false;
+		}
+	}
+
+	//draw market value
+	var fontsize = ctx.canvas.width/30;
+	ctx.font = fontsize + 'px Arial';
+	canvas.fillStyle = 'black';
+	var message = "Market Value of S pens: $" + market;
+	canvas.fillText(message, ctx.canvas.width/2-canvas.measureText(message).width/2, canvas.canvas.height-fontsize);
+
+	if(new Date().getTime()-last3>=5000){
+		market = parseFloat(market);
+		market += Math.random()*4-2;
+		if(market<2){
+			market += Math.random()*15-2;
+		}
+		if(market<=0){
+			market = 0.01;
+		}
+		market = market.toFixed(2);
+		last3 = new Date().getTime();
+	}
+
+	if(soldani){
+		var fontsize = ctx.canvas.width/5;
+		ctx.font = fontsize + 'px Arial';
+		canvas.fillStyle = 'red';
+		canvas.fillText(soldanimessage, soldanix, soldaniy);
+		if(new Date().getTime()-last4>=20){
+			soldanix += ctx.canvas.width/70;
+			if(soldanix>canvas.canvas.width){
+				soldani = false;
+			}
+			last4 = new Date().getTime();
+		}
+	}
+}
+
+function click(e){
+	if(shippingani){
+		return;
+	}
+	//check for buy buttons
+	for(var i=0;i<3;i++){
+		var x = canvas.canvas.width/2*i-size/2*i;
+		var y = canvas.canvas.height/2-size/2;
+		var width = size;
+		var height = size*0.7153;
+		if(e.pageX>x && e.pageY>y && e.pageX < x+width && e.pageY<y+height){
+			money-=prices[i];
+			money = money.toFixed(2);
+			shippingani = true;
+			bought = i;
+			last = new Date().getTime();
+		}
+	}
+
+	//check for sell button
+	var sellsize = canvas.canvas.width/13;
+	if(spens>0 && e.pageX<sellsize&&e.pageY<sellsize*0.7153){
+		var fontsize = ctx.canvas.width/5;
+		canvas.font = fontsize + 'px Arial';
+		spens-=1;
+		market = parseFloat(market);
+		money = parseFloat(money);
+		money+=market;
+		money = money.toFixed(2);
+		soldani = true;
+		soldanix = -canvas.measureText(soldanimessage).width;
+		soldaniy = canvas.canvas.height/2+fontsize/2;
+	}
+
+}
+
+function touchclick(e){
+	e.preventDefault();
+	touch = true;
+	click(e.changedTouches[0]);
+}
+
+function mouseclick(e){
+	if(touch){
+		return;
+	}
+	click(e);
+}
+
+canvas.canvas.onmousedown = mouseclick;
+canvas.canvas.ontouchstart = touchclick;
+canvas.canvas.ontouchstart.preventDefault();
+
+</script>
+
+</body>
+
+</html>

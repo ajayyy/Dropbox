@@ -1,0 +1,330 @@
+<html>
+
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="viewport" content = "width = device-height, initial-scale = 0.5, user-scalable = 1, height = device-width" />
+<meta name="mobile-web-app-capable" content="yes"><body>
+<p id='stuff'></p>
+
+
+<script>
+//var canvas = document.getElementById("canvas").getContext("2d");
+//var ctx = canvas;
+
+var touch = false;
+var step = 0;
+var frame = 1;
+var message = "Hello there...        Tap or click to continue...";
+var buttons = 1;//how many buttons should we have?
+var buttontitles = ["Next"];
+
+setInterval(update,1000/15);
+
+function update(){
+	 //var ctx = canvas;
+	  //ctx.canvas.width  = window.innerWidth;
+	  //ctx.canvas.height = window.innerHeight;
+
+	//canvas.clearRect(0, 0,  ctx.canvas.width, ctx.canvas.height);
+
+	if(step<message.split("").length){
+		document.getElementById('stuff').innerHTML += message.split("")[step];
+		step++;
+	}else if(step==message.split("").length){
+		for(var i=0;i<buttons;i++){
+			document.getElementById('stuff').innerHTML += "<button onclick=\"clicked(" + i + ")\">" + buttontitles[i] + "</button>";
+		}
+		buttontitles = ["Next"];
+		buttons = 1;
+		step++
+	}
+}
+
+function clicked(button){
+	document.getElementById("stuff").innerHTML += "<br />";
+	frame++;
+	step= 0;
+	switch(frame){
+		case 2:
+			message = "Ok, let's start...";
+			break;
+		case 3:
+			message = "So, I was gonna make a game for you...";
+			break;
+		case 4:
+			message = "I then thought about what to do...";
+			break;
+		case 5:
+			message = "I thought about a racing game, maybe a dodging game.";
+			break;
+		case 6:
+			message = "Great time killers...";
+			break;
+		case 7:
+			message = "I realised...   Time is what you need...";
+			break;
+		case 8:
+			message = "A time killer is the complete opposite of what you would want or need...";
+			break;
+		case 9:
+			message = "So yea...";
+			break;
+		case 10:
+			message = "This is weird... I guess I could make a time saver...";
+			break;
+		case 11:
+			message = "But what........................hmmm............hmmmm..........   Wait.... I got an idea!!!!";
+			break;
+		case 12:
+			message = "Wait, I don't...";
+			break;
+		case 13:
+			message = "More thinking needed...";
+			break;
+		case 14:
+			message = "Ok...............................................Got an idea.....   How about I..........    _______";
+			buttons = 2;
+			buttontitles = ["just stick with a timekiller", "think more... Then I'll know"];
+			break;
+		case 15:
+			if(button==1){
+				message = "Ok... I can _______";
+				buttons = 2;
+				buttontitles = [" do.... idk", "ummmm.... this is hard... we can just do a timekiller"];
+			}else{
+				message = "I can make a                 ________";
+				buttons = 4;
+				buttontitles = ["","","nursing school simulator", "think more... Then I'll know"];
+			}
+			break;
+		case 16:
+			if(button==2){
+				message = "Ok... This is gonna be weird...     Let's go to Auburn  ...you just got here today...   and    meet....       Cayouga...    What do you do?";
+				buttons = 2;
+				buttontitles = ["enter", "quit"];
+			}else if(button==1){
+				message = "Ok, well I'm making a nursing simulator for now...       Ok... This is gonna be weird...     Let's go to Auburn  ...you just got here today...  and    meet....       Cayouga...    What do you do?";
+				buttons = 2;
+				buttontitles = ["enter", "quit"];
+			}else{
+				message = "Well Ain't nobody got time for dat!!! I'm making a nursing simulator for now...       Ok... This is gonna be weird...     Let's go to Auburn    ...you just got here today...  and    meet....       Cayouga...    What do you do?";
+				buttons = 2;
+				buttontitles = ["enter", "quit"];
+			}
+			
+			break;
+		case 17:
+			if(button==0){
+				message = "You enter... There are two doors. Someone walks up to you... They ask how you are doing... They then say to take the left door. You say ok. When they walk away where do you go?";
+				buttons = 2;
+				buttontitles = ["take the left", "I'm a rebel! take the right."];
+			}else{
+				message = "You lose...";
+				buttons = 0;
+				buttontitles = [""];
+			}
+			break;
+		case 18:
+			if(button==0){
+				message = "You continue and enter your class...";
+				buttons = 1;
+				buttontitles = ["Next"];
+			}else{
+				message = "You entered the staff only room.";
+				buttons = 3;
+				buttontitles = ["","Turn around", "Keep going"];
+			}
+			break;
+		case 19:
+			if(button==0){
+				message = "The teacher is talking and you are really tired";
+				buttons = 2;
+				buttontitles = ["Try to listen","Just sleep"];
+			}else if(button==1){
+				button = 0;
+				frame = 16;
+				clicked(button);
+			}else{
+				message = "There are two doors.";
+				buttons = 4;
+				buttontitles = ["","", "Enter the door that says Emergency exit.", "Enter the staff room (It looks empty)"];
+			}
+			break;
+		case 20:
+			if(button==0){
+				message = "The teacher says: \"is how you calculate.........yes and.................Yes, to do that you...............And............           Ok.....      That was good...     Ok, you must complete these 70 pages of work by tomorrow at 7:00 AM.      It is 10:30 PM right now.\" You leave class and don't know what to do. You have to go home first.";
+				buttons = 2;
+				buttontitles = ["Go home","Sleep in the car and do your work. Be un prepared for your next class"];
+			}else if(button==1){
+				message = "zZzZzzZzZzzZzZzzZzZzzZzZzzZzZzzZzZzzZzZzzZzZzzZzZzzZzZzzZzZzzZzZzzZzZzzZzZzzZzZzzZzZz..........................................................................................zZzZzzZzZzzZzZzzZzZzzZzZzzZzZzzZzZzzZzZzzZzZzzZzZzzZzZzzZzZzzZzZzZ";
+				buttons = 3;
+				buttontitles = ["","","Next"];
+			}else if(button==2){
+				message = "AAAAAAAAAAHHHHHHHHHHHHHH                  OOOOOOOOOOOOOHHHHHHHHHHHHHHH              AAAAAAAAAAAAAAHHHHHHHHHHHHHH            OOOOOOOOOOOOOOOHHHHHHHHHH             .................       You run outside         Everyone is mad at you..............                       You lose...";
+				buttons = 0;
+				buttontitles = [""];
+			}else if(buttons==3){
+				message = "You enter...      There is a table full of food.      The room is empty of people.    You also see a computer.";
+				buttons = 5;
+				buttontitles = ["","","","Eat it all!!!!!","Check the computer"];
+			}
+			break;
+		case 21:
+			if(button==0){
+				message = "Driving........................................................................................................................ You reach the border...............................They ask and ask and ask questions....................................................... How long have you been away?";
+				buttons = 3;
+				buttontitles = ["Just today","One day", "Two days"];
+			}else if(button==1){
+				message = "Should you do your work now? Or sleep...";
+				buttons = 5;
+				buttontitles = ["","", "", "Work, work, work", "SLEEP"];
+			}else if(button==2){
+				message = "GET UP!! WAKE UP!!!! WHAT ARE YOU DOING!! GET OUT, CLASS IS OVER.";
+				buttons = 7;
+				buttontitles = ["","","","","","I'm so sorry!!","What? What just happened!"];
+			}else if(button==3){
+				message = "mmmmmmmmmmmmmmmmmmmmm........................That was tasty.......... Want anything else?";
+				buttons = 9;
+				buttontitles = ["","","","","","","","leave", "Check the computers"];
+			}else if(button==4){
+				message = "Someone is logged in to the computer. You see that it is a staff...";
+				buttons = 11;
+				buttontitles = ["","","","","","","","","","Change the password", "Look at test answers"];
+			}
+			break;
+		case 22:
+			if(button==0){
+				message = "Ok, Have fun........................................................Driving.........................................";
+				buttons = 1;
+				buttontitles = ["Next"];
+			}else if(button==1||button==2){
+				message = "Ok.... I think you'll have to go in........... We'll meet you there.....................";
+				buttons = 2;
+				buttontitles = ["","Next"];
+			}else if(button==3){
+				message = "Working..................................................                       It is now 2:00 AM";
+				buttons = 3;
+				buttontitles = ["","","Sleep"];	
+			}else if(button==4){
+				message = "Sleeping.....................................................................................................................................................       ";
+				buttons = 4;
+				buttontitles = ["","","","Next"];
+			}else if(button==5||button==6){
+				message = "You know what you have to do. Now leave...";
+				buttons = 5;
+				buttontitles = ["","","","","Next"];
+			}else if(button==7){
+				message = "You are back in the main room. What door do you take?";
+				buttons = 6;
+				buttontitles = ["","","","","","Left, No choice!"];
+			}else if(button==8){
+				button = 6;
+				frame = 21;
+				clicked(button);
+			}else{
+				message = "You did it! You feel awesome........     Oh wait??       ....        What's that!!!!        .....      It's a teacher.....     You lose...";
+				buttons = 0;
+				buttontitles = [""];
+			}
+			break;
+		case 23:
+			if(button==0){
+				message = "You made it! It is 1:00 now. What should you do?";
+				buttons = 2;
+				buttontitles = ["Do work","Sleep"];
+			}else if(button==1){
+				message = "It looks like you lied to us. You stated the wrong amount of time that you were gone. You will have to wait for 5 hours so that we can double check everything.";
+				buttons = 3;
+				buttontitles = ["","","Next"];
+			}else if(button==2){
+				message = "Sleeping..............................................................................................................................................................                       You awake and realise that forgot to set your alarm................         luckily you wake just in time..............";
+				buttons = 4;
+				buttontitles = ["","","","Leave to school"];
+			}else if(button==3){
+				message = "You wake at 6:00 AM and start doing your work...";
+				buttons = 5;
+				buttontitles = ["","","","","Next"];
+			}else if(button==4){
+				message = "You are in your car confused about what had happened. You text someone else in the course and ask what happened...";
+				buttons = 6;
+				buttontitles = ["","","","","","Next"];
+			}else if(button==5){
+				message = "You enter your class. You are late and are told that this can never happen again.";
+				buttons = 7;
+				buttontitles = ["","","","","","","Next"];
+			}
+			break;
+		case 24:
+			if(button==0){
+				message = "Working..............................................................................................................................................";
+				buttons = 1;
+				buttontitles = ["Next"];
+			}else if(button==1){
+				message = "Sleeping............................................               ..........................................            ................                 You do not wake in time                You lose...";
+				buttons = 0;
+				buttontitles = [""];
+			}else if(button==2){
+				message = "You arrive at school.......     You hand in your work.......        They ask where your textbook is.....            You say that you did not have the time to return home and get it..........       They tell you that you must do a makeup day.......                  You are about to leave when.......................             All of a sudden............             They say..................                 \"You have to still come today you crazy!!!\"";
+				buttons = 2;
+				buttontitles = ["","Next"];
+			}else if(button==4){
+				message = "You don't finish in time but head to there.";
+				buttons = 3;
+				buttontitles = ["","","Next"];
+			}else if(button==5){
+				message = "No one responds...               You go to sleep.........";
+				buttons = 4;
+				buttontitles = ["","","","Next"];
+			}else if(button==6){
+				button = 0;
+				frame = 20;
+				clicked(button);
+			}
+			break;
+		case 25:
+			if(button==0){
+				message = "You've finished!      Now you can sleep...........";
+				buttons = 1;
+				buttontitles = ["Next"];
+			}else if(button==1){
+				message = "You go back.... You now have 2 days to make up........                    Thanks for playing you have reached the end of this path. You have won      but there are better ways to win (without makeup days)";
+				buttons = 0;
+				buttontitles = [""];
+			}else if(button==2){
+				message = "You arrive at school.......     You hand in your unfinished work.......        They ask where your textbook is.....            You say that you did not have the time to return home and get it..........       They tell you that you must do 2 makeup days.......                  You are about to leave when.......................             All of a sudden............             They say..................                 \"You have to still come today you crazy!!!\"";
+				buttons = 2;
+				buttontitles = ["","Next"];
+			}else if(button==3){
+				message = "You wake up at 7:30 AM to find out you had to be there at 7:00 AM               You Lose...";
+				buttons = 0;
+				buttontitles = [""];
+			}
+			break;
+		case 25:
+			if(button==0){
+				message = "Sleeping......................................                    Sleep................................................................................................................ You wake and it is time to go...";
+				buttons = 1;
+				buttontitles = ["Next"];
+			}else if(button==1){
+				button = 1;
+				frame = 24;
+				clicked(button);
+			}
+			break;
+		case 26:
+			message = "You made it on time and prepared................         Now you have to do this all over again!!!!           You win for now............";
+			buttons = 1;
+			buttontitles = ["Restart"];
+			break;
+		case 27:
+			window.location.reload();
+	}
+
+}
+
+//canvas.canvas.onmousedown = mouseclick;
+//scanvas.canvas.ontouchstart = touchclick;
+</script>
+
+</body>
+
+</html>
