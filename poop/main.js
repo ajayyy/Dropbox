@@ -24,8 +24,6 @@ var menu = true;
 var music = new Audio("music.wav");
 var loaded = 0;
 music.loop = true;
-music.play();
-
 
 
 function update(){
@@ -53,4 +51,8 @@ function update(){
 		timer = 0;
 		pooptype = !pooptype;
 	}
+}
+
+function playMusic() {
+	music.play();
 }
